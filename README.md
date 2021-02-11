@@ -1,0 +1,2 @@
+# scalasweeper
+Minesweeper in Scala
