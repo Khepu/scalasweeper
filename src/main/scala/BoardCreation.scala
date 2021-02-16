@@ -26,9 +26,8 @@ object BoardCreation {
 
     val rnd = new Random(System.currentTimeMillis())
 
-    def randomValue(max: Int): Try[Int] = {
+    def randomValue(max: Int): Try[Int] =
         Try(rnd.between(0, max))
-    }
 
     def randomPoint(maxX: Int, maxY: Int): Try[Point] =
         for {
@@ -41,13 +40,12 @@ object BoardCreation {
     // ===================================================================
 
     // TODO: make it work
-    def createMinePoints(width: Int, height: Int, mines: Int): Set[Point] = {
-        val mineGenerator = Iterator.unfold(Set.empty[Try[Point]]) {
+    def createMinePoints(width: Int, height: Int, mines: Int): Set[Point] =
+        Iterator.unfold(Set.empty[Try[Point]]) {
             points => randomPoint(width, height) + points
         }
             .takeWhile(points => points.size < mines)
 
-    }
 
 
 }
