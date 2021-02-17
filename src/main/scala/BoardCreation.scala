@@ -1,6 +1,6 @@
 package org.gmakris.scalasweeper
 
-import Entities.Point
+import Entities.{Config, Point}
 
 import scala.util.{Random, Try}
 
@@ -11,8 +11,8 @@ object BoardCreation {
     // ===================================================================
 
     // TODO: make it work
-    def create(width: Int, height: Int, mines: Int): Array[Int] = {
-        val minePoints = createMinePoints(width, height, mines)
+    def create(config: Config): Array[Int] = {
+        val minePoints = createMinePoints(config)
         /*
         (0 until (width * height))
             .toArray
@@ -39,13 +39,17 @@ object BoardCreation {
     // Mines
     // ===================================================================
 
-    // TODO: make it work
-    def createMinePoints(width: Int, height: Int, mines: Int): Set[Point] =
-        Iterator.unfold(Set.empty[Try[Point]]) {
-            points => randomPoint(width, height) + points
-        }
-            .takeWhile(points => points.size < mines)
+    def createMinePoints(config: Config, mines: Set[Point]): Try[Set[Point]] =
+        if (mines.size == config.mines)
+            Try(mines)
+        else (for {
+            mine <- randomPoint(config.width, config.height)
+            newState = mines + mine
+        } yield createMinePoints(config, newState))
+            .map(_.get)
 
+    def minePoints(config: Config): Try[Set[Point]] =
+        createMinePoints(config, Set.empty)
 
 
 }
