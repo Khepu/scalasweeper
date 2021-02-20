@@ -1,6 +1,6 @@
 package org.gmakris.scalasweeper
 
-import Entities.{Config, Point, Tile}
+import Entities.{Board, Config, Point, Tile}
 
 import scala.util.{Random, Try}
 
@@ -10,20 +10,23 @@ object BoardCreation {
     // Core
     // -------------------------------------------------------------------
 
-    def create(config: Config): Try[Array[Tile]] = {
+    def createBoard(config: Config): Try[Board] = {
         for {
             mines <- minePoints(config)
             points = boardPoints(config.width, config.height)
-        } yield points
-            .map(point =>
-                if (mines.contains(point))
-                    Tile(point, isRevealed = false, -1)
-                else
-                    Tile(
-                        point,
-                        isRevealed = false,
+            tiles = points
+                .map(point => Tile(
+                    point,
+                    isRevealed = false,
+                    if (mines.contains(point))
+                        -1
+                    else
                         mines.count(isAdjacent(point))))
-            .toArray
+
+            orderedTiles = tiles
+                .groupBy(_.point.x)
+                .map(indexAndRow => indexAndRow._2.toArray)
+        } yield Board(config, orderedTiles.toArray)
     }
 
     def boardPoints(width: Int, height: Int): Set[Point] =
