@@ -67,10 +67,4 @@ object BoardCreation {
 
     def minePoints(config: Config): Try[Set[Point]] =
         createMinePoints(config, Set.empty)
-
-    // -------------------------------------------------------------------
-    // Tiles
-    // -------------------------------------------------------------------
-
-
 }
