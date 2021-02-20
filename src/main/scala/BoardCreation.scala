@@ -25,8 +25,12 @@ object BoardCreation {
 
             orderedTiles = tiles
                 .groupBy(_.point.x)
-                .map(indexAndRow => indexAndRow._2.toArray)
-        } yield Board(config, orderedTiles.toArray)
+                .map(indexAndRow => indexAndRow._2
+                    .toArray
+                    .sortBy(tile => tile.point.y))
+                .toArray
+                .sortBy(tiles => tiles(0).point.x)
+        } yield Board(config, orderedTiles)
     }
 
     def boardPoints(width: Int, height: Int): Set[Point] =
